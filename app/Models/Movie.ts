@@ -12,8 +12,8 @@ export default class Movie extends BaseModel {
   @column()
   public duration: number
 
-  @column()
-  public year: Date
+  @column.dateTime()
+  public year: DateTime
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

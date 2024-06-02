@@ -10,6 +10,9 @@ export default class TheaterValidator {
       caseInsensitive: true,
     })]),
     capacity: schema.number([rules.range(1, 100)]),
+    projector: schema.object().members({
+      id: schema.number([rules.exists({ table: 'projectors', column: 'id' })])
+    })
   })
 
   public messages: CustomMessages = {}

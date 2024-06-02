@@ -1,10 +1,13 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Projector from 'App/Models/Projector';
 import Theater from 'App/Models/Theater'
+import Ws from 'App/Services/Ws';
 import TheaterValidator from 'App/Validators/TheaterValidator';
 
 export default class TheatersController {
 
     public async find({ request, params }: HttpContextContract) {
+        Ws.io.emit('news', { message: 'listaron desde otro lugar a teatros' })
         if (params.id) {
             // cargar la relacion
             let theTheater: Theater = await Theater.findOrFail(params.id);
@@ -36,6 +39,9 @@ export default class TheatersController {
         //* se valida el request y no directamente el body
         const body= await request.validate(TheaterValidator);
         const theTheater: Theater = await Theater.create(body);
+        const theProjector:Projector= await Projector.findOrFail(body.projector.id);
+        theProjector.theater_id=theTheater.id;
+        await theProjector.save();
         return theTheater;
     }
 
@@ -57,4 +63,6 @@ export default class TheatersController {
             return await theTheater.delete();
         }
     }
+
+
 }
